@@ -8,15 +8,26 @@ var BirdEntity = me.Entity.extend({
         settings.spriteheight= 60;
 
         this._super(me.Entity, 'init', [x, y, settings]);
+
         this.alwaysUpdate = true;
         this.body.gravity = 0.2;
         this.gravityForce = 0.01;
-        this.maxAngleRotation = Number.prototype.degToRad(30);
-        this.maxAngleRotationDown = Number.prototype.degToRad(90);
+        
+        // gravity inverted === 1
+        this.gravityInverted = 0;
+
+        // constants for fast reference
+        this.maxAngleRotationUp = -Math.PI/6; 
+        this.maxAngleRotationDown = Math.PI/6;
+        this.maxAngleRotationUpExtreme = -Math.PI/2;
+        this.maxAngleRotationDownExtreme = Math.PI/2;
+        this.gravityAngleGradient = Number.prototype.degToRad(0.5);
+
         this.renderable.addAnimation("flying", [0, 1, 2]);
         this.renderable.addAnimation("idle", [0]);
         this.renderable.setCurrentAnimation("flying");
         this.renderable.anchorPoint = new me.Vector2d(0.1, 0.5);
+        
         // manually add a rectangular collision shape
         this.body.addShape(new me.Rect(5, 5, 70, 50));
 
@@ -29,6 +40,9 @@ var BirdEntity = me.Entity.extend({
 
         // collision shape
         this.collided = false;
+
+        this.name = "clumsy";
+
     },
 
     update: function(dt) {
@@ -37,25 +51,80 @@ var BirdEntity = me.Entity.extend({
         if (!game.data.start) {
             return this._super(me.Entity, 'update', [dt]);
         }
-        if (me.input.isKeyPressed('fly')) {
-            me.audio.play('wing');
-            this.gravityForce = 0.02;
-            var currentPos = this.pos.y;
-            // stop the previous tweens
-            this.flyTween.stop();
-            this.flyTween.to({y: currentPos - 72}, 50);
-            this.flyTween.start();
-            this.renderable.angle = -this.maxAngleRotation;
-        } else {
-            this.gravityForce += 0.2;
-            this.pos.y += me.timer.tick * this.gravityForce;
-            this.renderable.angle += Number.prototype.degToRad(0.5) * this.gravityForce;
-            if (this.renderable.angle > this.maxAngleRotationDown)
-                this.renderable.angle = this.maxAngleRotationDown;
+        
+        // trying to invert gravity
+        if(me.input.isKeyPressed('invert_gravity')) {
+            
+            if(this.gravityInverted === 0)  {
+                this.gravityInverted = 1;
+                this.gravityForce = -0.01;
+                this.renderable.angle = 0;
+            }
+            else {
+                this.gravityInverted = 0;
+                this.gravityForce = 0.01;
+                this.renderable.angle = 0;
+            }
+
+            this.renderable.flipY(this.gravityInverted === 1);
+
         }
+
+        //hardcoded this to avoid multiple comparisons and increase performance
+
+        if(this.gravityInverted === 0) { //normal gravity
+            if (me.input.isKeyPressed('fly')) {
+                
+                me.audio.play('wing');
+                this.gravityForce = 0.02;
+                var currentPos = this.pos.y;
+
+                // stop the previous tweens
+                this.flyTween.stop();
+                this.flyTween.to({y: currentPos - 72 }, 50);
+                this.flyTween.start();
+                this.renderable.angle = this.maxAngleRotationUp;
+            } else {
+                //accelerate
+                this.gravityForce += 0.2;
+                //change position according to acceleration
+                this.pos.y += me.timer.tick * this.gravityForce;
+                //nose dive the player
+                this.renderable.angle += this.gravityAngleGradient * this.gravityForce;
+                //ensure player doesn't rotate
+                if(this.renderable.angle > this.maxAngleRotationDownExtreme)
+                    this.renderable.angle = this.maxAngleRotationDownExtreme;
+
+            }
+        } else { //inverted gravity
+            if (me.input.isKeyPressed('fly')) {
+                
+                me.audio.play('wing');
+                this.gravityForce = -0.02;
+                var currentPos = this.pos.y;
+
+                // stop the previous tweens
+                this.flyTween.stop();
+                this.flyTween.to({y: currentPos + 72}, 50);
+                this.flyTween.start();
+                this.renderable.angle = -this.maxAngleRotationDown;
+            } else {
+                //accelerate
+                this.gravityForce -= 0.2;
+                //change position according to acceleration
+                this.pos.y += me.timer.tick * this.gravityForce;
+                //nose dive the player
+                this.renderable.angle -= this.gravityAngleGradient * this.gravityForce;
+                //ensure player doesn't rotate
+                if(this.renderable.angle > this.maxAngleRotationDownExtreme) // don't fuck with this
+                    this.renderable.angle = this.maxAngleRotationDownExtreme; // you've been warned
+
+            }
+        }
+
         this.updateBounds();
 
-        var hitSky = -80; // bird height + 20px
+        var hitSky = -100; // bird height + 20px //changed it to something else
         if (this.pos.y <= hitSky || this.collided) {
             game.data.start = false;
             me.audio.play("lose");
@@ -64,10 +133,12 @@ var BirdEntity = me.Entity.extend({
         }
         me.collision.check(this);
         this._super(me.Entity, 'update', [dt]);
+
         return true;
     },
 
     onCollision: function(response) {
+        
         var obj = response.b;
         if (obj.type === 'pipe' || obj.type === 'ground') {
             me.device.vibrate(500);
@@ -79,6 +150,7 @@ var BirdEntity = me.Entity.extend({
             game.data.steps++;
             me.audio.play('hit');
             this.pos.x = 60;
+            if(obj.gravityInverter === true) this.externallyInvertGravity();
         }
     },
 
@@ -98,7 +170,23 @@ var BirdEntity = me.Entity.extend({
                 me.state.change(me.state.GAME_OVER);
             });
         this.endTween.start();
-    }
+    },
+
+    externallyInvertGravity: function() {
+
+        if(this.gravityInverted === 0)  {
+                this.gravityInverted = 1;
+                this.gravityForce = -0.01;
+                this.renderable.angle = 0;
+            }
+            else {
+                this.gravityInverted = 0;
+                this.gravityForce = 0.01;
+                this.renderable.angle = 0;
+            }
+
+            this.renderable.flipY(this.gravityInverted === 1);
+    },
 
 });
 
@@ -143,11 +231,17 @@ var PipeGenerator = me.Renderable.extend({
         this.generate = 0;
         this.pipeFrequency = 92;
         this.pipeHoleSize = 1240;
+        this.gravityInvertCounter = 1;
+        this.gravityInvertFrequency = Math.round(Math.random()*10 +1);
+        console.log(" random number " + this.gravityInvertFrequency);
         this.posX = me.game.viewport.width;
+        
+
     },
 
     update: function(dt) {
-        if (this.generate++ % this.pipeFrequency == 0) {
+        // return;
+        if ((this.generate++) % this.pipeFrequency === 0) {
             var posY = Number.prototype.random(
                     me.video.renderer.getHeight() - 100,
                     200
@@ -156,12 +250,26 @@ var PipeGenerator = me.Renderable.extend({
             var pipe1 = new me.pool.pull('pipe', this.posX, posY);
             var pipe2 = new me.pool.pull('pipe', this.posX, posY2);
             var hitPos = posY - 100;
-            var hit = new me.pool.pull("hit", this.posX, hitPos);
+            var hit;
+
+            if ((this.gravityInvertCounter++) % this.gravityInvertFrequency === 0) {
+                this.gravityInvertCounter = 1;
+                this.gravityInvertFrequency = Math.round(Math.random()*10 +1);
+                console.log(" random number " + this.gravityInvertFrequency);
+                hit = new me.pool.pull("hit", this.posX, hitPos,true); 
+                
+
+            } else  {
+                hit = new me.pool.pull("hit", this.posX, hitPos,false);
+            }
+
             pipe1.renderable.flipY(true);
             me.game.world.addChild(pipe1, 10);
             me.game.world.addChild(pipe2, 10);
             me.game.world.addChild(hit, 11);
         }
+
+
         this._super(me.Entity, "update", [dt]);
         return true;
     },
@@ -169,7 +277,7 @@ var PipeGenerator = me.Renderable.extend({
 });
 
 var HitEntity = me.Entity.extend({
-    init: function(x, y) {
+    init: function(x, y, inverter) {
         var settings = {};
         settings.image = this.image = me.loader.getImage('hit');
         settings.width = 148;
@@ -185,6 +293,7 @@ var HitEntity = me.Entity.extend({
         this.body.accel.set(-5, 0);
         this.body.addShape(new me.Rect(0, 0, settings.width - 30, settings.height - 30));
         this.type = 'hit';
+        this.gravityInverter = inverter;
     },
 
     update: function(dt) {
