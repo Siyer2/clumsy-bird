@@ -15,6 +15,7 @@ var BirdEntity = me.Entity.extend({
         
         // gravity inverted === 1
         this.gravityInverted = 0;
+        this.gravityInvertFlag = 0;
 
         // constants for fast reference
         this.maxAngleRotationUp = -Math.PI/6; 
@@ -53,7 +54,7 @@ var BirdEntity = me.Entity.extend({
         }
         
         // trying to invert gravity
-        if(me.input.isKeyPressed('invert_gravity')) {
+        if(me.input.isKeyPressed('invert_gravity') || this.gravityInvertFlag === 1) {
             
             if(this.gravityInverted === 0)  {
                 this.gravityInverted = 1;
@@ -67,6 +68,7 @@ var BirdEntity = me.Entity.extend({
             }
 
             this.renderable.flipY(this.gravityInverted === 1);
+            this.gravityInvertFlag = 0;
 
         }
 
@@ -87,6 +89,7 @@ var BirdEntity = me.Entity.extend({
             } else {
                 //accelerate
                 this.gravityForce += 0.2;
+
                 //change position according to acceleration
                 this.pos.y += me.timer.tick * this.gravityForce;
                 //nose dive the player
@@ -156,15 +159,16 @@ var BirdEntity = me.Entity.extend({
                 this.pos.x = 60;
                 if(obj.gravityInverter === true) { 
                     
-                    this.flyTween.stop();
-                    this.externallyInvertGravity();
-                    if(this.gravityInverted === 0) 
-                        this.pos.y = obj.pos.y + 15;
-                    else
-                        this.pos.y = obj.pos.y - 25;
+                    // this.flyTween.stop();
+                    // this.externallyInvertGravity();
+                    // if(this.gravityInverted === 0) 
+                    //     this.pos.y = obj.pos.y + 15;
+                    // else
+                    //     this.pos.y = obj.pos.y - 25;
                     // console.log("o " + obj.pos.y + " b " + this.pos.y);
                     // this.updateB ounds();
                     // me.state.pause(true);
+                    this.gravityInvertFlag = 1;
                 }
             }
                 
