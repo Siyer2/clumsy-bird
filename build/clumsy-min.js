@@ -198,7 +198,8 @@ var BirdEntity = me.Entity.extend({
             }
         }
 
-        this.updateBounds();
+        // var obj = me.game.world.collide(this);
+       
 
         var hitSky = -100; // bird height + 20px //changed it to something else
         if (this.pos.y <= hitSky || this.collided) {
@@ -208,6 +209,7 @@ var BirdEntity = me.Entity.extend({
             return false;
         }
         me.collision.check(this);
+        this.updateBounds();
         this._super(me.Entity, 'update', [dt]);
 
         return true;
@@ -216,18 +218,32 @@ var BirdEntity = me.Entity.extend({
     onCollision: function(response) {
         
         var obj = response.b;
+
         if (obj.type === 'pipe' || obj.type === 'ground') {
-            me.device.vibrate(500);
-            this.collided = true;
-        }
-        // remove the hit box
-        if (obj.type === 'hit') {
-            me.game.world.removeChildNow(obj);
-            game.data.steps++;
-            me.audio.play('hit');
-            this.pos.x = 60;
-            if(obj.gravityInverter === true) this.externallyInvertGravity();
-        }
+                me.device.vibrate(500);
+                this.collided = true;
+            }
+        
+            // remove the hit box
+            if (obj.type === 'hit') {
+                me.game.world.removeChildNow(obj);
+                game.data.steps++;
+                me.audio.play('hit');
+                this.pos.x = 60;
+                if(obj.gravityInverter === true) { 
+                    
+                    this.flyTween.stop();
+                    this.externallyInvertGravity();
+                    if(this.gravityInverted === 0) 
+                        this.pos.y = obj.pos.y + 15;
+                    else
+                        this.pos.y = obj.pos.y - 25;
+                    // console.log("o " + obj.pos.y + " b " + this.pos.y);
+                    // this.updateB ounds();
+                    // me.state.pause(true);
+                }
+            }
+                
     },
 
     endAnimation: function() {
@@ -309,7 +325,7 @@ var PipeGenerator = me.Renderable.extend({
         this.pipeHoleSize = 1240;
         this.gravityInvertCounter = 1;
         this.gravityInvertFrequency = Math.round(Math.random()*10 +1);
-        console.log(" random number " + this.gravityInvertFrequency);
+        // console.log(" random number " + this.gravityInvertFrequency);
         this.posX = me.game.viewport.width;
         
 
@@ -317,29 +333,35 @@ var PipeGenerator = me.Renderable.extend({
 
     update: function(dt) {
         // return;
-        if ((this.generate++) % this.pipeFrequency === 0) {
+        if ((this.generate++) === this.pipeFrequency) {
+            this.generate = 0;
             var posY = Number.prototype.random(
                     me.video.renderer.getHeight() - 100,
                     200
             );
-            var posY2 = posY - me.video.renderer.getHeight() - this.pipeHoleSize;
+             var posY2 = posY - me.video.renderer.getHeight() - this.pipeHoleSize;
+            // console.log("RH " + me.video.renderer.getHeight());
             var pipe1 = new me.pool.pull('pipe', this.posX, posY);
             var pipe2 = new me.pool.pull('pipe', this.posX, posY2);
             var hitPos = posY - 100;
             var hit;
 
-            if ((this.gravityInvertCounter++) % this.gravityInvertFrequency === 0) {
+            if ((this.gravityInvertCounter++) === this.gravityInvertFrequency) {
+
                 this.gravityInvertCounter = 1;
-                this.gravityInvertFrequency = Math.round(Math.random()*10 +1);
-                console.log(" random number " + this.gravityInvertFrequency);
-                hit = new me.pool.pull("hit", this.posX, hitPos,true); 
+                // this.gravityInvertFrequency = Math.round(Math.random()*10 +1);
+                this.gravityInvertFrequency = Number.prototype.random(1,15);
+                // console.log(" random number " + this.gravityInvertFrequency);
                 
+                hit = new me.pool.pull("hit", this.posX, hitPos,true); 
 
             } else  {
                 hit = new me.pool.pull("hit", this.posX, hitPos,false);
             }
 
             pipe1.renderable.flipY(true);
+            // var temp = (posY - this.pipeHoleSize);
+            // console.log("p " + posY + "p2 " + temp);
             me.game.world.addChild(pipe1, 10);
             me.game.world.addChild(pipe2, 10);
             me.game.world.addChild(hit, 11);
@@ -370,6 +392,7 @@ var HitEntity = me.Entity.extend({
         this.body.addShape(new me.Rect(0, 0, settings.width - 30, settings.height - 30));
         this.type = 'hit';
         this.gravityInverter = inverter;
+
     },
 
     update: function(dt) {
