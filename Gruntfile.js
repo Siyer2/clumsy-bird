@@ -1,6 +1,7 @@
 /*global module:false*/
 module.exports = function(grunt) {
     var sourceFiles = [
+        'lib/melonJS-1.0.2.js',
         'js/game.js',
         'js/resources.js',
         'js/entities/entities.js',
