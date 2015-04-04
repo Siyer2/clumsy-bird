@@ -4,8 +4,8 @@ var BirdEntity = me.Entity.extend({
         settings.image = me.loader.getImage('clumsy');
         settings.width = 85;
         settings.height = 60;
-        settings.spritewidth = 85;
-        settings.spriteheight= 60;
+        settings.spritewidth = 60;
+        settings.spriteheight= 42;
 
         this._super(me.Entity, 'init', [x, y, settings]);
 
@@ -83,7 +83,7 @@ var BirdEntity = me.Entity.extend({
 
                 // stop the previous tweens
                 this.flyTween.stop();
-                this.flyTween.to({y: currentPos - 72 }, 50);
+                this.flyTween.to({y: currentPos - 62 }, 50);
                 this.flyTween.start();
                 this.renderable.angle = this.maxAngleRotationUp;
             } else {
@@ -108,7 +108,7 @@ var BirdEntity = me.Entity.extend({
 
                 // stop the previous tweens
                 this.flyTween.stop();
-                this.flyTween.to({y: currentPos + 72}, 50);
+                this.flyTween.to({y: currentPos + 62}, 50);
                 this.flyTween.start();
                 this.renderable.angle = -this.maxAngleRotationDown;
             } else {
@@ -157,18 +157,31 @@ var BirdEntity = me.Entity.extend({
                 game.data.steps++;
                 me.audio.play('hit');
                 this.pos.x = 60;
+
                 if(obj.gravityInverter === true) { 
                     
-                    // this.flyTween.stop();
-                    // this.externallyInvertGravity();
-                    // if(this.gravityInverted === 0) 
-                    //     this.pos.y = obj.pos.y + 15;
-                    // else
-                    //     this.pos.y = obj.pos.y - 25;
-                    // console.log("o " + obj.pos.y + " b " + this.pos.y);
-                    // this.updateB ounds();
+                    this.flyTween.stop();
+                    if(this.gravityInverted === 0)  {
+                        this.gravityInverted = 1;
+                        this.gravityForce = -0.005;
+                        this.renderable.angle = 0;
+                    }
+                    else {
+                        this.gravityInverted = 0;
+                        this.gravityForce = 0.005;
+                        this.renderable.angle = 0;
+                    }
+
+                    this.renderable.flipY(this.gravityInverted === 1);
+                    
+                    if(this.gravityInverted === 0) 
+                        this.pos.y = obj.pos.y;
+                    else
+                        this.pos.y = obj.pos.y - 18;
+                    console.log("o " + obj.pos.y + " b " + this.pos.y);
+                    this.updateBounds();
                     // me.state.pause(true);
-                    this.gravityInvertFlag = 1;
+                    // this.gravityInvertFlag = 1;
                 }
             }
                 
@@ -194,18 +207,7 @@ var BirdEntity = me.Entity.extend({
 
     externallyInvertGravity: function() {
 
-        if(this.gravityInverted === 0)  {
-                this.gravityInverted = 1;
-                this.gravityForce = -0.01;
-                this.renderable.angle = 0;
-            }
-            else {
-                this.gravityInverted = 0;
-                this.gravityForce = 0.01;
-                this.renderable.angle = 0;
-            }
-
-            this.renderable.flipY(this.gravityInverted === 1);
+        
     },
 
 });
@@ -252,7 +254,7 @@ var PipeGenerator = me.Renderable.extend({
         this.pipeFrequency = 92;
         this.pipeHoleSize = 1240;
         this.gravityInvertCounter = 1;
-        this.gravityInvertFrequency = Math.round(Math.random()*10 +1);
+        this.gravityInvertFrequency =  Number.prototype.random(1,15);
         // console.log(" random number " + this.gravityInvertFrequency);
         this.posX = me.game.viewport.width;
         

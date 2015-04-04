@@ -17,6 +17,7 @@ var game = {
         me.loader.onload = this.loaded.bind(this);
         me.loader.preload(game.resources);
         me.state.change(me.state.LOADING);
+        
         // add "#debug" to the URL to enable the debug Panel
         if (document.location.hash === "#debug") {
             window.onReady(function () {
