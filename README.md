@@ -1,4 +1,4 @@
-Clumsy Bird
+Flippy Cat
 ===========
 
 A MelonJS made "Flappy Bird" clone forked from [@ellisonleao](http://github.com/ellisonleao).
@@ -11,7 +11,7 @@ Modifications to the game include :
   - Added an 8 bit soundtrack , a remix of the popular nya nya nya track.
   - Added a rainbow trail to the nyan cat.
 
-How it adapts to the theme ?
+How it adapts to the theme "The Game has changed"?
 
 For starters I have completely changed the art/theme of the game. I've added a nyan cat instead of the flappy bird with the rainbow trail and the irritating soundrack.
 
