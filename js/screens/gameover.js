@@ -45,11 +45,11 @@ game.GameOverScreen = me.ScreenObject.extend({
         me.game.world.addChild(new BackgroundLayer('bg', 1));
 
         // ground
-        this.ground1 = me.pool.pull('ground', 0, me.video.renderer.getHeight() - 96);
-        this.ground2 = me.pool.pull('ground', me.video.renderer.getWidth(),
-                                    me.video.renderer.getHeight() - 96);
-        me.game.world.addChild(this.ground1, 11);
-        me.game.world.addChild(this.ground2, 11);
+        // this.ground1 = me.pool.pull('ground', 0, me.video.renderer.getHeight() - 96);
+        // this.ground2 = me.pool.pull('ground', me.video.renderer.getWidth(),
+        //                             me.video.renderer.getHeight() - 96);
+        // me.game.world.addChild(this.ground1, 11);
+        // me.game.world.addChild(this.ground2, 11);
 
         // share button
         var buttonsHeight = me.video.renderer.getHeight() / 2 + 200;
@@ -78,8 +78,8 @@ game.GameOverScreen = me.ScreenObject.extend({
                 // renderable
                 this._super(me.Renderable, 'init', [0, 0, 100, 100]);
                 this.font = new me.Font('gamefont', 40, 'black', 'left');
-                this.steps = 'Steps: ' + game.data.steps.toString();
-                this.topSteps= 'Higher Step: ' + me.save.topSteps.toString();
+                this.steps = 'Score: ' + game.data.steps.toString();
+                this.topSteps= 'High Score: ' + me.save.topSteps.toString();
             },
 
             draw: function (renderer) {
@@ -117,6 +117,6 @@ game.GameOverScreen = me.ScreenObject.extend({
         this.ground1 = null;
         this.ground2 = null;
         this.font = null;
-        me.audio.stop("theme");
+        me.audio.stop("theme_nyan");
     }
 });

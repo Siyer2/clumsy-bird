@@ -1,10 +1,10 @@
 var BirdEntity = me.Entity.extend({
     init: function(x, y) {
         var settings = {};
-        settings.image = me.loader.getImage('clumsy');
+        settings.image = me.loader.getImage('cat');
         settings.width = 85;
         settings.height = 60;
-        settings.spritewidth = 60;
+        settings.spritewidth = 68;
         settings.spriteheight= 42;
 
         this._super(me.Entity, 'init', [x, y, settings]);
@@ -24,17 +24,18 @@ var BirdEntity = me.Entity.extend({
         this.maxAngleRotationDownExtreme = Math.PI/2;
         this.gravityAngleGradient = Number.prototype.degToRad(0.5);
 
-        this.renderable.addAnimation("flying", [0, 1, 2]);
+        this.renderable.addAnimation("flying", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
         this.renderable.addAnimation("idle", [0]);
         this.renderable.setCurrentAnimation("flying");
         this.renderable.anchorPoint = new me.Vector2d(0.1, 0.5);
         
         // manually add a rectangular collision shape
-        this.body.addShape(new me.Rect(5, 5, 70, 50));
+        this.body.addShape(new me.Rect(5, 5,68, 42));
 
         // a tween object for the flying physic effect
         this.flyTween = new me.Tween(this.pos);
         this.flyTween.easing(me.Tween.Easing.Exponential.InOut);
+        
 
         // end animation tween
         this.endTween = null;
@@ -43,6 +44,15 @@ var BirdEntity = me.Entity.extend({
         this.collided = false;
 
         this.name = "clumsy";
+        this.lol_count = 0;
+        var that = this;
+        this.flyTween.onUpdate(function() {            
+            var ag =  that.gravityInverted === 0 ? that.renderable.angle + 30: -that.renderable.angle -30; 
+            // for(i = -20; i <= 0; i += 5) {
+                // me.game.world.addChild(new RainbowEntity(that.pos.x - 10 ,that.pos.y, ag));
+            // }
+
+        });
 
     },
 
@@ -83,7 +93,9 @@ var BirdEntity = me.Entity.extend({
 
                 // stop the previous tweens
                 this.flyTween.stop();
-                this.flyTween.to({y: currentPos - 62 }, 50);
+                this.flyTween.to({y: currentPos - 62 }, 100);
+                
+
                 this.flyTween.start();
                 this.renderable.angle = this.maxAngleRotationUp;
             } else {
@@ -108,7 +120,11 @@ var BirdEntity = me.Entity.extend({
 
                 // stop the previous tweens
                 this.flyTween.stop();
-                this.flyTween.to({y: currentPos + 62}, 50);
+                this.flyTween.to({y: currentPos + 62}, 100);
+                // this.flyTween.onUpdate(new function() {
+                //       me.game.world.addChild(new RainbowEntity(this._object.pos.x - 10,this._object.pos.y));
+
+                //     });
                 this.flyTween.start();
                 this.renderable.angle = -this.maxAngleRotationDown;
             } else {
@@ -125,10 +141,12 @@ var BirdEntity = me.Entity.extend({
             }
         }
 
-        // var obj = me.game.world.collide(this);
+        
+        me.game.world.addChild(new RainbowEntity(this.pos.x - 10,this.pos.y,
+            this.gravityInverted === 0 ? this.renderable.angle : -this.renderable.angle));
        
 
-        var hitSky = -100; // bird height + 20px //changed it to something else
+        var hitSky = -100; // bird hardcodedeight + 20px //changed it to something else
         if (this.pos.y <= hitSky || this.collided) {
             game.data.start = false;
             me.audio.play("lose");
@@ -145,7 +163,8 @@ var BirdEntity = me.Entity.extend({
     onCollision: function(response) {
         
         var obj = response.b;
-
+        // if(obj.type === 'rainbow')
+        //     return;
         if (obj.type === 'pipe' || obj.type === 'ground') {
                 me.device.vibrate(500);
                 this.collided = true;
@@ -214,9 +233,9 @@ var BirdEntity = me.Entity.extend({
 
 
 var PipeEntity = me.Entity.extend({
-    init: function(x, y) {
+    init: function(x, y, pipe_no) {
         var settings = {};
-        settings.image = this.image = me.loader.getImage('pipe');
+        settings.image = this.image = me.loader.getImage('pipe1');
         settings.width = 148;
         settings.height= 1664;
         settings.spritewidth = 148;
@@ -271,8 +290,9 @@ var PipeGenerator = me.Renderable.extend({
             );
              var posY2 = posY - me.video.renderer.getHeight() - this.pipeHoleSize;
             // console.log("RH " + me.video.renderer.getHeight());
-            var pipe1 = new me.pool.pull('pipe', this.posX, posY);
-            var pipe2 = new me.pool.pull('pipe', this.posX, posY2);
+            var pipe_no =  Number.prototype.random(0,3);
+            var pipe1 = new me.pool.pull('pipe', this.posX, posY, pipe_no);
+            var pipe2 = new me.pool.pull('pipe', this.posX, posY2, pipe_no);
             var hitPos = posY - 100;
             var hit;
 
@@ -362,4 +382,32 @@ var Ground = me.Entity.extend({
         return this._super(me.Entity, 'update', [dt]);
     },
 
+});
+
+var RainbowEntity = me.Entity.extend({
+    init: function(x,y,angle) {
+        var settings = {};
+        settings.image = me.loader.getImage('rainbow');
+        settings.width = 20;
+        settings.height = 36;
+        this._super(me.Entity,'init',[x,y,settings]);
+        this.alwaysUpdate = true;
+        this.body.gravity = 0;
+        this.body.vel.set(-6,0);
+        this.body.addShape(new me.Rect(0,0,settings.width,settings.height));
+        this.renderable.angle = angle;
+        this.body.collisionType = me.collision.types.NO_OBJECT;
+        this.type = 'rainbow';
+
+    },
+
+    update: function(dt) {
+        this.pos.add(this.body.vel);
+        if(this.pos.x < -this.renderable.width) {
+            me.game.world.removeChild(this);
+        }
+        this.updateBounds();
+        return this._super(me.Entity, 'update', [dt]);
+
+    },
 });
