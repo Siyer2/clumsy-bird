@@ -361,9 +361,9 @@ var HitEntity = me.Entity.extend({
 var Ground = me.Entity.extend({
     init: function(x, y) {
         var settings = {};
-        settings.image = me.loader.getImage('ground');
+        // settings.image = me.loader.getImage('ground');
         settings.width = 900;
-        settings.height= 96;
+        settings.height= 1;
         this._super(me.Entity, 'init', [x, y, settings]);
         this.alwaysUpdate = true;
         this.body.gravity = 0;
@@ -373,12 +373,7 @@ var Ground = me.Entity.extend({
     },
 
     update: function(dt) {
-        // mechanics
-        this.pos.add(this.body.vel);
-        if (this.pos.x < -this.renderable.width) {
-            this.pos.x = me.video.renderer.getWidth() - 10;
-        }
-        this.updateBounds();
+        
         return this._super(me.Entity, 'update', [dt]);
     },
 

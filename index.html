@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
   <head>
-    <title>Clumsy Bird</title>
+    <title>Flippy Cat</title>
     <link rel="apple-touch-icon-precomposed" href="data/img/touch-icon-iphone.png"/>
     <link rel="apple-touch-icon-precomposed" sizes="120x120" href="data/img/touch-icon-iphone-retina.png"/>
     <link rel="shortcut icon" href="data/img/favicon.ico">
@@ -9,16 +9,16 @@
     <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Clumsy Bird">
+    <meta name="apple-mobile-web-app-title" content="Flippy Cat">
     <meta charset="UTF-8" />
-    <meta name="description" content="Clumsy Bird - A Flappy Bird clone using MelonJS"/>
+    <meta name="description" content="Flippy Cat - A Flappy Bird clone using MelonJS"/>
     <meta name="keywords" content="flappybird, flappy, bird, game, html5, melonjs,clone"/>
     <meta name="robots" content="index, follow">
     
-    <meta property="og:image" content="http://ellisonleao.github.io/clumsy-bird/data/img/bg.png" />
-    <meta property="og:title" content="Clumsy Bird - A Flappy Bird clone using MelonJS"/>
-    <meta property="og:url" content="http://ellisonleao.github.io/clumsy-bird/"/>
-    <meta property="og:site_name" content="Clumsy Bird - MelonJS"/>
+    <meta property="og:image" content="http://t4nuj.github.io/clumsy-bird/data/img/bg.png" />
+    <meta property="og:title" content="Flippy Cat- A Flappy Bird clone using MelonJS"/>
+    <meta property="og:url" content="http://t4nuj.github.io/clumsy-bird/"/>
+    <meta property="og:site_name" content="Flippy Cat - MelonJS"/>
 
 
 
@@ -35,13 +35,34 @@
     <!-- Canvas placeholder -->
     <div id="screen"></div>
     
-    <div>
-      <p class="credits">Hosted With ❤ by Github</p> 
+    <div id="credit_container">
+      <div id="name">
+        <a href="http://www.github.com/t4nuj"><p class="credits" align="left">Created By Tanuj Bhatia</p></a>
+      </div>
+      <div id="gh_hosting"> 
+      <p class="credits">
+        <a href="http://www.github.com/t4nuj/clumsy-bird">
+        Hosted With <span class="red">❤</span> on Github </a>
+        <br><br>
+        A flappy bird clone with random gravity flips.
+      </p>
+      </div>
+      <div id="additional_credits"> 
+        <p class="credits">
+        <a href="https://twitter.com/prguitarman">
+        Nyan cat original art by : Christopher Torres (@prguitarman)
+        </a>
+        <br><br>
+        <a href="https://www.youtube.com/user/Bunnymajs">
+        Music Originally by : Bunnymajs @ youtube.com
+        </a></p>
+
+      </div>
     </div>
     
 
     <!-- melonJS Library -->
-    <script type="text/javascript" src="lib/melonJS-2.0.2.js"></script>
+    <script type="text/javascript" src="lib/melonJS-2.0.2-min.js"></script>
     <script type="text/javascript" src="lib/plugins/debug/debugPanel.js"></script>
     <script type="text/javascript" src="build/clumsy-min.js" ></script>
     

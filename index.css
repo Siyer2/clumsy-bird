@@ -22,7 +22,7 @@ body {
   /* Hide the gap for font descenders. */
   display: block;
   
-  height: 600px;
+  height: 560px;
   /* disable scaling interpolation */
   image-rendering: optimizeSpeed;
   image-rendering: -moz-crisp-edges;
@@ -55,7 +55,38 @@ body {
 .credits {
   font-family: 'gamefont';
   text-align: center;
-  color: #000000;  
+  color: #000000; 
+
 
 }
 
+a {
+   text-decoration: none; 
+   color: #000000;
+}
+
+.red {
+  color: #FE2E2E;
+}
+
+#name {
+  float: left;
+  
+  width :33%;
+}
+
+#gh_hosting {
+  float: left;
+  width: 33%;
+
+}
+
+#additional_credits {
+  float: left;
+  width: 33%;
+}
+
+#credit_container {
+  width: 100%;
+  overflow: auto;
+}
