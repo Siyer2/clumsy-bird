@@ -64,23 +64,23 @@ var BirdEntity = me.Entity.extend({
         }
         
         // trying to invert gravity
-        if(me.input.isKeyPressed('invert_gravity') || this.gravityInvertFlag === 1) {
+        // if(me.input.isKeyPressed('invert_gravity') || this.gravityInvertFlag === 1) {
             
-            if(this.gravityInverted === 0)  {
-                this.gravityInverted = 1;
-                this.gravityForce = -0.01;
-                this.renderable.angle = 0;
-            }
-            else {
-                this.gravityInverted = 0;
-                this.gravityForce = 0.01;
-                this.renderable.angle = 0;
-            }
+        //     if(this.gravityInverted === 0)  {
+        //         this.gravityInverted = 1;
+        //         this.gravityForce = -0.01;
+        //         this.renderable.angle = 0;
+        //     }
+        //     else {
+        //         this.gravityInverted = 0;
+        //         this.gravityForce = 0.01;
+        //         this.renderable.angle = 0;
+        //     }
 
-            this.renderable.flipY(this.gravityInverted === 1);
-            this.gravityInvertFlag = 0;
+        //     this.renderable.flipY(this.gravityInverted === 1);
+        //     this.gravityInvertFlag = 0;
 
-        }
+        // }
 
         //hardcoded this to avoid multiple comparisons and increase performance
 

@@ -11,7 +11,12 @@ Modifications to the game include :
   - Added an 8 bit soundtrack , a remix of the popular nya nya nya track.
   - Added a rainbow trail to the nyan cat.
 
-How it adapts to the theme ?  
+How it adapts to the theme ?
+
+For starters I have completely changed the art/theme of the game. I've added a nyan cat instead of the flappy bird with the rainbow trail and the irritating soundrack.
+
+Most importantly flippy cat can "change" at any moment.
+The gravity of the game is set to flip at random.  
 
 ![](https://cloud.githubusercontent.com/assets/121322/6448504/4c8ddef8-c0cf-11e4-9a67-dd56af973cd4.jpg)
 
