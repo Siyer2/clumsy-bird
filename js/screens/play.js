@@ -1,6 +1,6 @@
 game.PlayScreen = me.ScreenObject.extend({
     init: function() {
-        me.audio.play("theme", true);
+        me.audio.play("theme_nyan", true);
         // lower audio volume on firefox browser
         var vol = me.device.ua.contains("Firefox") ? 0.3 : 0.5;
         me.audio.setVolume(vol);
@@ -9,9 +9,9 @@ game.PlayScreen = me.ScreenObject.extend({
 
     onResetEvent: function() {
         me.game.reset();
-        me.audio.stop("theme");
+        me.audio.stop("theme_nyan");
         if (!game.data.muted){
-            me.audio.play("theme", true);
+            me.audio.play("theme_nyan", true);
         }
 
         me.input.bindKey(me.input.KEY.SPACE, "fly", true);
@@ -22,11 +22,11 @@ game.PlayScreen = me.ScreenObject.extend({
 
         me.game.world.addChild(new BackgroundLayer('bg', 1));
 
-        this.ground1 = me.pool.pull('ground', 0, me.video.renderer.getHeight() - 96);
-        this.ground2 = me.pool.pull('ground', me.video.renderer.getWidth(),
-                                    me.video.renderer.getHeight() - 96);
-        me.game.world.addChild(this.ground1, 11);
-        me.game.world.addChild(this.ground2, 11);
+        // this.ground1 = me.pool.pull('ground', 0, me.video.renderer.getHeight() - 96);
+        // this.ground2 = me.pool.pull('ground', me.video.renderer.getWidth(),
+        //                             me.video.renderer.getHeight() - 96);
+        // me.game.world.addChild(this.ground1, 11);
+        // me.game.world.addChild(this.ground2, 11);
 
         this.HUD = new game.HUD.Container();
         me.game.world.addChild(this.HUD);
@@ -55,7 +55,7 @@ game.PlayScreen = me.ScreenObject.extend({
     },
 
     onDestroyEvent: function() {
-        me.audio.stopTrack('theme');
+        me.audio.stopTrack('theme_nyan');
         // free the stored instance
         this.HUD = null;
         this.bird = null;

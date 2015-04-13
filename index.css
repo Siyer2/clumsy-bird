@@ -1,5 +1,5 @@
 body {
-  background-color: #0099cc;
+  background-color: #003466;
   color: #fff;
 
   /* Allow mouse dragging. */
@@ -22,6 +22,7 @@ body {
   /* Hide the gap for font descenders. */
   display: block;
   
+  height: 600px;
   /* disable scaling interpolation */
   image-rendering: optimizeSpeed;
   image-rendering: -moz-crisp-edges;
@@ -51,7 +52,10 @@ body {
   font-style: normal;
 }
 
-.google {
-  position: absolute;
-  left:23%;
+.credits {
+  font-family: 'gamefont';
+  text-align: center;
+  color: #000000;  
+
 }
+
