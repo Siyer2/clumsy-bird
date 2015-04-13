@@ -18,9 +18,10 @@ For starters I have completely changed the art/theme of the game. I've added a n
 Most importantly flippy cat can "change" at any moment.
 The gravity of the game is set to flip at random.  
 
-![](https://cloud.githubusercontent.com/assets/121322/6448504/4c8ddef8-c0cf-11e4-9a67-dd56af973cd4.jpg)
 
-![](http://i.imgur.com/Slbvt65.png)
+![](https://raw.githubusercontent.com/t4nuj/clumsy-bird/gh-pages/data/img/screen1.png)
+
+![](https://raw.githubusercontent.com/t4nuj/clumsy-bird/gh-pages/data/img/screen2.png)
 
 Play online at http://t4nuj.github.io/clumsy-bird/
     
