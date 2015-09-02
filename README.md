@@ -2,7 +2,7 @@ Flippy Cat
 ===========
 
 A MelonJS made "Flappy Bird" clone forked from [@ellisonleao](http://github.com/ellisonleao).
-This was my *winning* entry for the Github Game Off 2015.
+This was my [*winning*](https://github.com/showcases/game-off-winners) entry for the Github Game Off 2015.
 
 Modifications to the game include :
   - Gravity of the game can flip/invert at random thus increasing its difficulty.
